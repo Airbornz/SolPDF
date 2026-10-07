@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sol-pdf"
+version = "0.1.0"
+description = "A local desktop PDF editor for everyday work"
+requires-python = ">=3.10"
+license = "AGPL-3.0-or-later"
+dependencies = ["PySide6-Essentials==6.8.3", "PyMuPDF==1.26.7"]
+
+[project.optional-dependencies]
+dev = ["pytest==8.4.2", "pyinstaller==6.22.3"]
+
+[project.scripts]
+sol-pdf = "sol_pdf.app:main"
+
+[tool.setuptools.packages.find]
+include = ["sol_pdf*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
