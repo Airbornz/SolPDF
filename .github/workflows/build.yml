@@ -33,9 +33,11 @@ jobs:
       - name: Test
         env:
           QT_QPA_PLATFORM: offscreen
-        run: python -m pytest -q
+        run: python -m pytest -x -q
       - name: Build
         run: python scripts/build.py
+      - name: Verify packaged application
+        run: python scripts/verify_packaged_app.py
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact }}

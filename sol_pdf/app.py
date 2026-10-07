@@ -411,8 +411,8 @@ class MainWindow(QMainWindow):
         self.action("a_find", "Find…", self.focus_search, QKeySequence.StandardKey.Find)
         self.action("a_close", "Close document", self.close_document, QKeySequence("Ctrl+W"))
         self.action("a_show_sidebar", "Show right sidebar", self.restore_sidebar)
-        next_tab = QKeySequence("Meta+Tab") if sys.platform == "darwin" else QKeySequence.StandardKey.NextChild
-        previous_tab = QKeySequence("Meta+Shift+Tab") if sys.platform == "darwin" else QKeySequence.StandardKey.PreviousChild
+        next_tab = QKeySequence("Meta+Tab" if sys.platform == "darwin" else "Ctrl+Tab")
+        previous_tab = QKeySequence("Meta+Shift+Tab" if sys.platform == "darwin" else "Ctrl+Shift+Tab")
         self.action("a_next_document", "Next document", lambda: self.cycle_document(1), next_tab)
         self.action("a_previous_document", "Previous document", lambda: self.cycle_document(-1), previous_tab)
 
@@ -734,7 +734,7 @@ class MainWindow(QMainWindow):
         view.addActions([self.a_next_document, self.a_previous_document])
         help_menu = self.menuBar().addMenu("Help")
         help_menu.addAction("About Sol PDF", lambda: QMessageBox.about(self, "Sol PDF",
-            "<b>Sol PDF 0.1.0</b><br>Local PDF editing for everyday work.<br><br>"
+            "<b>Sol PDF 0.1.1</b><br>Local PDF editing for everyday work.<br><br>"
             "Page management, text editing, undo and redo.<br>"
             "Open-source software · AGPL-3.0-or-later<br>"
             "Powered by PySide6 and PyMuPDF.<br><br>"
@@ -1262,7 +1262,8 @@ class MainWindow(QMainWindow):
                 self.clear_target()
             if self.mode == "edit" and not spans:
                 self.statusBar().showMessage("No selectable text on this page · Scans require OCR")
-            self.schedule_text_preview()
+            if self.mode == "add" and self.target is not None:
+                self.update_text_preview()
         except Exception as error:
             self.error(error)
 

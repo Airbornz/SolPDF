@@ -416,7 +416,7 @@ class PDFDocument:
             with fitz.open(temp) as check:
                 if check.page_count != doc.page_count:
                     raise PDFError("The saved PDF did not pass verification.")
-            with open(temp, "rb") as saved:
+            with open(temp, "r+b") as saved:
                 os.fsync(saved.fileno())
             os.replace(temp, path)
         finally:

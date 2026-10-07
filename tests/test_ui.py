@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 from pathlib import Path
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
@@ -11,6 +12,13 @@ from PySide6.QtTest import QTest
 from PySide6.QtWidgets import QApplication, QPushButton, QFileDialog, QDialog, QDoubleSpinBox, QComboBox, QCheckBox, QMessageBox, QInputDialog
 
 from sol_pdf.app import MainWindow, STYLE
+
+
+def wait_until(predicate, timeout=3000):
+    deadline = time.monotonic() + timeout / 1000
+    while not predicate() and time.monotonic() < deadline:
+        QTest.qWait(20)
+    assert predicate(), "The desktop preview did not settle before the timeout."
 
 
 @pytest.fixture(scope="module")
@@ -121,7 +129,7 @@ def test_on_page_typing_live_preview_matches_applied_pdf(app, tmp_path, monkeypa
     QTest.keyClicks(window.inline_editor, "Second line")
     window.font_size.setValue(20)
     window.bold_button.setChecked(True)
-    QTest.qWait(120)
+    wait_until(lambda: not window.preview_timer.isActive() and window.canvas.image.toImage() != window.canvas.base_image.toImage())
     assert window.editor.toPlainText() == "Live preview\nSecond line"
     assert not window.model.doc[0].get_text() and window.model.revision == revision
     assert window.canvas.image.toImage() != window.canvas.base_image.toImage()
@@ -153,7 +161,7 @@ def test_inline_draft_cancel_reposition_zoom_and_tab_restore(app, monkeypatch):
     QTest.qWait(100)
     assert window.inline_editor.toPlainText() == "Keep this draft"
     window.zoom_box.setCurrentText("150%")
-    QTest.qWait(100)
+    wait_until(lambda: not window.preview_timer.isActive() and window.inline_view.geometry() == window.canvas.rect())
     assert window.inline_view.geometry() == window.canvas.rect()
     window.new_file()
     assert window.mode == "view" and window.inline_view.isHidden()

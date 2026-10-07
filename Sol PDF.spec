@@ -25,5 +25,5 @@ collect = COLLECT(exe, a.binaries, a.datas, strip=False, upx=False, name="Sol PD
 if is_mac:
     app = BUNDLE(collect, name="Sol PDF.app", icon=icon if Path(icon).exists() else None,
         bundle_identifier="com.solpdf.desktop",
-        info_plist={"CFBundleDisplayName": "Sol PDF", "CFBundleShortVersionString": "0.1.0",
+        info_plist={"CFBundleDisplayName": "Sol PDF", "CFBundleShortVersionString": "0.1.1",
             "NSHighResolutionCapable": True, "LSMinimumSystemVersion": "12.0"})

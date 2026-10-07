@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sol-pdf"
-version = "0.1.0"
+version = "0.1.1"
 description = "A local desktop PDF editor for everyday work"
 requires-python = ">=3.10"
 license = "AGPL-3.0-or-later"
@@ -21,4 +21,3 @@ include = ["sol_pdf*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-

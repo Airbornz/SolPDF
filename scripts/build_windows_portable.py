@@ -64,4 +64,3 @@ manifest = "\n".join(f"{hashlib.sha256(item.read_bytes()).hexdigest()}  {item.na
 output = shutil.make_archive(str(ROOT / "dist" / "Sol-PDF-Windows-x64-portable"),
     "zip", DEST.parent, DEST.name)
 print(output)
-
