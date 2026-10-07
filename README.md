@@ -84,7 +84,7 @@ You can also pass a PDF path: `python -m sol_pdf "document.pdf"`.
 python scripts/build.py
 ```
 
-Build on each destination OS. PyInstaller does not cross-compile. The GitHub Actions workflow builds Windows x64 ZIP, macOS arm64 app ZIP, and Linux x64 tar.gz archives when run manually or on a version tag. Extract the Windows ZIP and open `Sol PDF.exe` inside the folder. Extract the Linux archive and run the `Sol PDF` executable with all adjacent files present.
+Build on each destination OS. PyInstaller does not cross-compile. The GitHub Actions workflow builds Windows x64 ZIP, macOS arm64 app ZIP, and Linux x64 tar.gz archives when run manually or on a version tag. It runs the desktop/PDF tests and launches the packaged app in offscreen mode to verify editing, preview, document tabs, saving, and reopening. Tagged builds attach the three packages to a GitHub release after those checks pass. Extract the Windows ZIP and open `Sol PDF.exe` inside the folder. Extract the Linux archive and run the `Sol PDF` executable with all adjacent files present.
 
 Linux desktop dependencies (Ubuntu 22.04 or newer):
 
@@ -92,7 +92,7 @@ Linux desktop dependencies (Ubuntu 22.04 or newer):
 sudo apt-get install libegl1 libopengl0 libxcb-cursor0 libxkbcommon-x11-0
 ```
 
-This project has been tested locally on Apple Silicon. A portable Windows package is also assembled in `dist/Sol-PDF-Windows-x64-portable.zip`: extract the whole ZIP and double-click **Launch Sol PDF.cmd**. It includes official Windows Python and library binaries, so no Python installation is required. This package has not been executed on Windows yet. Build and run the native workflow for Windows validation and a conventional EXE. Linux builds require the workflow or a Linux host and have not been executed here. Installers, automatic updates, Windows code signing, and Apple notarization are not configured.
+Use the native application downloads linked above. An alternate Windows portable package can also be assembled in `dist/Sol-PDF-Windows-x64-portable.zip`: extract the whole ZIP and double-click **Launch Sol PDF.cmd**. It includes official Windows Python and library binaries, so no Python installation is required. The alternate portable package has not been executed on Windows; the release workflow validates the native EXE package. Installers, automatic updates, Windows code signing, and Apple notarization are not configured.
 
 To recreate the Windows portable archive from another platform, run `python scripts/build_windows_portable.py`. It downloads official Windows wheels and the Python 3.13.16 embedded runtime, verifies the runtime checksum against Python's release page, and packages them with the app source.
 

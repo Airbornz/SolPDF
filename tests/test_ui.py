@@ -85,7 +85,7 @@ def test_collapsed_sidebar_has_reopen_control_in_both_modes(app):
         app.processEvents()
         width = window.workspace.sizes()[1]
         window.workspace.setSizes([window.workspace.width(), 0])
-        QTest.qWait(20)
+        wait_until(lambda: window.sidebar_reopen.isVisible())
         assert window.workspace.sizes()[1] == 0
         assert window.sidebar_reopen.isVisible()
         assert window.workspace.height() > 500
@@ -158,7 +158,7 @@ def test_inline_draft_cancel_reposition_zoom_and_tab_restore(app, monkeypatch):
     window.text_clicked((72, 120))
     window.inline_editor.setPlainText("Keep this draft")
     window.text_clicked((100, 150))
-    QTest.qWait(100)
+    wait_until(lambda: not window.preview_timer.isActive())
     assert window.inline_editor.toPlainText() == "Keep this draft"
     window.zoom_box.setCurrentText("150%")
     wait_until(lambda: not window.preview_timer.isActive() and window.inline_view.geometry() == window.canvas.rect())
@@ -166,7 +166,7 @@ def test_inline_draft_cancel_reposition_zoom_and_tab_restore(app, monkeypatch):
     window.new_file()
     assert window.mode == "view" and window.inline_view.isHidden()
     window.activate_document(0)
-    QTest.qWait(100)
+    wait_until(lambda: not window.preview_timer.isActive() and window.inline_view.isVisible())
     assert window.model is first and window.mode == "add"
     assert window.inline_view.isVisible() and window.inline_editor.toPlainText() == "Keep this draft"
     assert window.text_x.value() == 100 and window.text_y.value() == 150
@@ -189,7 +189,7 @@ def test_highlighting_inline_text_keeps_glyph_size(app, size, zoom):
     window.text_clicked((72, 120))
     window.font_size.setValue(size)
     window.inline_editor.setPlainText("Selecting this text")
-    QTest.qWait(100)
+    wait_until(lambda: not window.preview_timer.isActive() and window.canvas.image.toImage() != window.canvas.base_image.toImage())
     font = window.inline_editor.document().defaultFont()
     assert font.pointSizeF() * window.inline_editor.logicalDpiY() / 72 == pytest.approx(size * window.canvas.scale)
     window.inline_editor.clearFocus()
@@ -594,7 +594,7 @@ def test_floating_find_shortcut_navigation_and_dismissal(app, tmp_path):
     assert window.scroll.viewport().size() == initial_size
     assert window.find_panel.parentWidget() is window.scroll.viewport()
     window.search.setText("Needle")
-    QTest.qWait(220)
+    wait_until(lambda: len(window.search_hits) == 3 and window.find_panel.count.text() == "1/3")
     assert len(window.search_hits) == 3 and window.find_panel.count.text() == "1/3"
     QTest.keyClick(window.search, Qt.Key.Key_Return)
     assert window.find_panel.count.text() == "2/3"
@@ -611,7 +611,7 @@ def test_floating_find_shortcut_navigation_and_dismissal(app, tmp_path):
     window.a_find.trigger()
     assert window.search.selectedText() == "Needle"
     window.search.setText("Missing text")
-    QTest.qWait(220)
+    wait_until(lambda: window.find_panel.count.text() == "0/0")
     assert window.find_panel.count.text() == "0/0"
     window.search.clear()
     assert window.find_panel.count.text() == ""
